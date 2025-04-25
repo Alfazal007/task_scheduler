@@ -5,8 +5,8 @@ const app = express()
 
 app.use(express.json())
 
-app.post("/api/v1/addNormalTask", (req, res) => {
-    const data = req.body;
+app.post("/api/v1/addNormalTask", async (req, res) => {
+    const data = req.body
     if (!data) {
         res.status(400).json({
             message: "No request body provided"
