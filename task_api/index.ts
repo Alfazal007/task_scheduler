@@ -1,5 +1,7 @@
 import express from "express"
-import { addNormalTaskType } from "./zodTypes/addNormalTaskType";
+import { addNormalTaskType } from "./zodTypes/addNormalTaskType"
+import { tryCatch } from "./helpers/tryCatch"
+import { prisma } from "./constants/prisma"
 
 const app = express()
 
@@ -26,8 +28,28 @@ app.post("/api/v1/addNormalTask", async (req, res) => {
         return
     }
 
+    const unixTimestamp = Math.floor(parsedData.data.scheduledAt.getTime() / 1000)
+    const taskWrittenToDBResult = await tryCatch(prisma.task.create({
+        data: {
+            command: parsedData.data.command,
+            typeOfTask: parsedData.data.typeOfTask,
+            scheduledAt: unixTimestamp
+        }
+    }))
+    if (taskWrittenToDBResult.error) {
+        res.status(400).json({
+            message: "Issue writing to the database"
+        })
+        return
+    } else if (!taskWrittenToDBResult.data) {
+        res.status(400).json({
+            message: "Issue writing to the database"
+        })
+        return
+    }
+
     res.status(200).send({
-        message: "sent"
+        message: "Added task successfully"
     })
     return
 })

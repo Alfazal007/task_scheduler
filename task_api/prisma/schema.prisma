@@ -8,9 +8,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Task {
-  id          Int    @id @default(autoincrement())
-  command     String
-  scheduledAt BigInt
+enum TypeOfTask {
+  BASH
+  DOCKER
+  NODE
 }
 
+model Task {
+  id          Int        @id @default(autoincrement())
+  command     String
+  scheduledAt Int
+  typeOfTask  TypeOfTask
+}
