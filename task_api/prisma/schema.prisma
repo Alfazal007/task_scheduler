@@ -15,8 +15,12 @@ enum TypeOfTask {
 }
 
 model Task {
-  id          Int        @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   command     String
-  scheduledAt Int
+  scheduledAt BigInt
   typeOfTask  TypeOfTask
+  pickedAt    BigInt     @default(0)
+  startedAt   BigInt     @default(0)
+  completedAt BigInt     @default(0)
+  failedAt    BigInt     @default(0)
 }

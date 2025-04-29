@@ -28,12 +28,11 @@ app.post("/api/v1/addNormalTask", async (req, res) => {
         return
     }
 
-    const unixTimestamp = Math.floor(parsedData.data.scheduledAt.getTime() / 1000)
     const taskWrittenToDBResult = await tryCatch(prisma.task.create({
         data: {
             command: parsedData.data.command,
             typeOfTask: parsedData.data.typeOfTask,
-            scheduledAt: unixTimestamp
+            scheduledAt: parsedData.data.scheduledAtEpoch
         }
     }))
     if (taskWrittenToDBResult.error) {
