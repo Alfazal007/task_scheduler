@@ -1,5 +1,6 @@
 #[derive(sqlx::Type, serde::Serialize, serde::Deserialize, Debug)]
 #[serde(rename_all = "UPPERCASE")]
+#[sqlx(type_name = "TypeOfTask")]
 pub enum TypeOfTask {
     BASH,
     DOCKER,

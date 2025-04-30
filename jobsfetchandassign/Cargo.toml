@@ -7,5 +7,5 @@ edition = "2024"
 chrono = "0.4.40"
 dotenvy = "0.15.7"
 serde = { version = "1.0.219", features = ["derive"] }
-sqlx = { version = "0.8.5", features = ["postgres", "runtime-tokio"] }
+sqlx = { version = "0.8.5", features = [ "postgres", "runtime-tokio", "tls-native-tls", "macros"]}
 tokio = { version = "1.44.2", features = ["full"] }
