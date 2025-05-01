@@ -24,3 +24,10 @@ pub struct Task {
     #[sqlx(rename = "failedAt")]
     pub failed_at: i64,
 }
+
+#[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize, Debug)]
+pub struct IdAndType {
+    pub id: i32,
+    #[sqlx(rename = "typeOfTask")]
+    pub type_of_task: TypeOfTask,
+}
