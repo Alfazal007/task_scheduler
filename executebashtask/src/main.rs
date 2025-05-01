@@ -1,8 +1,8 @@
-use chrono::Utc;
 use core::panic;
 use redis::Commands;
 use sqlx::postgres::PgPoolOptions;
 use std::{env, error::Error};
+use task_execute::start_task::start_task;
 
 pub mod models;
 pub mod task_execute;
@@ -27,6 +27,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             panic!("Issue pulling redis data {:?}", e);
         }
         let id = redis_result.unwrap().1;
-        let picked_at_time = Utc::now().timestamp();
+
+        let res = start_task(id, &pool).await;
+        if let Err(e) = res {
+            println!("{:?}", e);
+        }
     }
 }

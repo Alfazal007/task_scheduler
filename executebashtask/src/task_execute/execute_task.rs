@@ -1,3 +1,4 @@
-use sqlx::{Pool, Postgres};
-
-pub async fn execute_task(id: i32, pg_pool: &Pool<Postgres>) {}
+pub async fn execute_task(command: String) -> Result<(), String> {
+    println!("{:?}", command);
+    Ok(())
+}
