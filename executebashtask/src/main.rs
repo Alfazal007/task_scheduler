@@ -27,7 +27,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             panic!("Issue pulling redis data {:?}", e);
         }
         let id = redis_result.unwrap().1;
-
         let res = start_task(id, &pool).await;
         if let Err(e) = res {
             println!("{:?}", e);
