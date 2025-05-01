@@ -4,7 +4,16 @@
 pub enum TypeOfTask {
     BASH,
     DOCKER,
-    NODE,
+}
+
+impl std::fmt::Display for TypeOfTask {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TypeOfTask::BASH => "BASH",
+            TypeOfTask::DOCKER => "DOCKER",
+        };
+        write!(f, "{}", s)
+    }
 }
 
 #[derive(sqlx::FromRow, serde::Serialize, serde::Deserialize, Debug)]

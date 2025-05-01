@@ -11,7 +11,6 @@ datasource db {
 enum TypeOfTask {
   BASH
   DOCKER
-  NODE
 }
 
 model Task {
