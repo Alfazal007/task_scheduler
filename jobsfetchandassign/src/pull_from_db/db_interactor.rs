@@ -1,9 +1,13 @@
-use chrono::{Duration, Utc};
-use sqlx::{Pool, Postgres, query, query_as};
-
 use crate::{models::tasks::IdAndType, pull_from_db::push_to_queue::push_to_redis_queue};
+use chrono::{Duration, Utc};
+use r2d2::Pool;
+use redis::Client;
+use sqlx::{Postgres, query, query_as};
 
-pub async fn pull_from_db(pg_pool: &Pool<Postgres>) -> Result<(), ()> {
+pub async fn pull_from_db(
+    pg_pool: &sqlx::Pool<Postgres>,
+    redis_connection_pool: &Pool<Client>,
+) -> Result<(), ()> {
     let cur_time = Utc::now();
     let future_time = cur_time + Duration::seconds(30);
     let epoch_time = future_time.timestamp();
@@ -35,11 +39,12 @@ pub async fn pull_from_db(pg_pool: &Pool<Postgres>) -> Result<(), ()> {
     };
     let tasks = fetch_tasks_result.unwrap();
     if tasks.is_empty() {
+        println!("Early commit");
         let _ = tx.commit().await;
         return Ok(());
     }
 
-    let queue_push_result = push_to_redis_queue(&tasks).await;
+    let queue_push_result = push_to_redis_queue(&tasks, redis_connection_pool).await;
     if queue_push_result.is_err() {
         let _ = tx.rollback().await;
         return Err(());

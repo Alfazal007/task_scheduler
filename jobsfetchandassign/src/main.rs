@@ -1,3 +1,4 @@
+use r2d2::Pool;
 use sqlx::postgres::PgPoolOptions;
 use std::{env, error::Error};
 use tokio::time::{Duration, sleep};
@@ -15,9 +16,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .await
         .expect("Issue connecting to the database");
 
+    let redis_client =
+        redis::Client::open("redis://127.0.0.1/").expect("Issue connecting to redis");
+    let redis_pool = Pool::builder()
+        .max_size(2)
+        .build(redis_client)
+        .expect("Issue creating connection pool for redis");
+
     loop {
         sleep(Duration::from_secs(5)).await;
-        pull_from_db::db_interactor::pull_from_db(&pool)
+        pull_from_db::db_interactor::pull_from_db(&pool, &redis_pool)
             .await
             .unwrap();
     }
